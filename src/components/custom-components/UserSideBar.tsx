@@ -55,7 +55,7 @@ const items = [
 ]
 
     return (
-        <Sidebar collapsible="none" className="border-r-2 w-[250px] h-auto">
+        <Sidebar collapsible="icon" className="border-r-2 w-[250px] h-auto">
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>

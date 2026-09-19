@@ -67,7 +67,7 @@ export function UserHeaderBar() {
     const initials = getUserInitials(userName);
 
     return (
-        <div className="flex h-20 items-center justify-between px-8 shadow-md select-none">
+        <div className="flex h-20 items-center justify-between px-8 select-none">
             <Link to={"/user"}>
                 <img
                     src="/assets/rccpb-01.png"
