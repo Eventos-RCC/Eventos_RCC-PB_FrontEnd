@@ -24,7 +24,7 @@ const userLogin = async (user: {
     setError(null)
 
     try {
-        const response = await api.post("/users/login", {
+        const response = await api.post("/auth/login", {
             ...user,
         })
         return response.data // Retorna a resposta com o e-mail e mensagem
@@ -48,7 +48,7 @@ const createUser = async (user: {
     setError(null)
 
     try {
-        const response = await api.post("/users", {
+        const response = await api.post("/users/onboarding1", {
             ...user,
         })
         create(response.data)
