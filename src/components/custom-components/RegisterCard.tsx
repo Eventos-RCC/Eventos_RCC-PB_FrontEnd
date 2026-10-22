@@ -35,14 +35,46 @@ import { maskDate, maskPhone } from "@/utils/masks";
 import { EmailAuthenticateDialog } from "./EmailAuthenticateDialog";
 import { Link } from "react-router-dom";
 
+
 const createUserSchema = z.object({
-    name: z.string().regex(/^[a-zA-ZÀ-ÿ\s]+$/, "Nome inválido"),
-    birthdate: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/, "Data de nascimento inválida"),
-    diocese: z.enum(["Arquidiocese da Paraíba", "Diocese de Guarabira", "Diocese de Campina Grande", "Diocese de Patos", "Diocese de Cajazeiras", "Outra"]),
-    phone: z.string().regex(/^\(\d{2}\) \d \d{4}-\d{4}$/, "Telefone inválido"),
-    email: z.string().regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Email inválido"),
-    password: z.string().regex(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=]).{8,}$/, "A senha precisa ter no mínimo 8 caracteres, com letras, números e caracteres especiais como @, #, $, %, &, *")
-})
+    name: z
+        .string()
+        .min(1, "Informe seu nome")
+        .regex(/^[a-zA-ZÀ-ÿ\s]+$/, "Nome inválido"),
+
+    birthDate: z
+        .string()
+        .regex(
+            /^\d{2}\/\d{2}\/\d{4}$/,
+            "Informe a data no formato dd/MM/AAAA"
+        ),
+
+    diocese: z
+        .enum([
+            "Arquidiocese da Paraíba",
+            "Diocese de Guarabira",
+            "Diocese de Campina Grande",
+            "Diocese de Patos",
+            "Diocese de Cajazeiras",
+            "Outra",
+        ]),
+
+    phone: z
+        .string()
+        .regex(
+            /^\(\d{2}\) \d \d{4}-\d{4}$/,
+            "Telefone inválido"
+        ),
+
+    email: z.string().email("E-mail inválido"),
+
+    password: z
+        .string()
+        .regex(
+            /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=]).{8,}$/,
+            "A senha precisa ter no mínimo 8 caracteres, com letras, números e caracteres especiais como @, #, $"
+        ),
+});
 
 export function RegisterCard() {
 
@@ -54,7 +86,7 @@ export function RegisterCard() {
         resolver: zodResolver(createUserSchema),
         defaultValues: {
             name: "",
-            birthdate: "",
+            birthDate: "",
             diocese: undefined,
             phone: "",
             email: "",
@@ -62,20 +94,32 @@ export function RegisterCard() {
         },
     })
 
-    const onSubmit = async (data: z.infer<typeof createUserSchema>) => {
+
+    const onSubmit = async (
+        data: z.infer<typeof createUserSchema>
+    ) => {
         try {
-            const response = await createUser(data);
-            console.log("Resposta da verificação:", response);
+            const response = await createUser({
+                name: data.name.trim(),
+                email: data.email.trim(),
+                password: data.password,
+                phone: data.phone.replace(/\D/g, ""),
+                birthDate: data.birthDate,
+                diocese: data.diocese,
+            });
+
             if (response.email) {
                 sessionStorage.setItem("emailToVerify", response.email);
-                setIsDialogOpen(true)
-                console.log("Informações guardadas com sucesso", response.email)
+                setIsDialogOpen(true);
+                console.log(data);
+
+                console.log("Código enviado para:", response.email);
             }
-            console.log("Usuário registrado com sucesso", response);
         } catch (error) {
-            console.error("Erro ao registrar usuário", error)
+            console.error("Erro ao iniciar cadastro:", error);
         }
-    }
+    };
+
 
     return (
         <>
@@ -123,7 +167,7 @@ export function RegisterCard() {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="birthdate"
+                                        name="birthDate"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Data de nascimento</FormLabel>
@@ -251,9 +295,14 @@ export function RegisterCard() {
                                     />
                                     <Button
                                         type="submit"
-                                        className="w-full bg-green-600 text-white hover:bg-green-700 hover:cursor-pointer"
+                                        disabled={loading}
+                                        className="w-full bg-green-600 text-white hover:bg-green-700"
                                     >
-                                        {loading ? <Loader className="animate-spin" /> : "Prosseguir"}
+                                        {loading ? (
+                                            <Loader className="animate-spin" />
+                                        ) : (
+                                            "Prosseguir"
+                                        )}
                                     </Button>
                                     <div className="flex items-center justify-between space-x-2">
                                         <Separator className="flex-grow h-px bg-gray-300" />

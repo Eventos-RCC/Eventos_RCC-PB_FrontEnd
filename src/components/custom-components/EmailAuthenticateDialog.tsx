@@ -1,5 +1,5 @@
+
 import { useState } from "react";
-import api from "@/apis/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,19 +27,43 @@ export function EmailAuthenticateDialog({
   onOpenChange,
 }: EmailAuthenticateDialogProps) {
   const [code, setCode] = useState("");
-  const { loading, error, setError } = useUsers();
+  const {
+    loading,
+    error,
+    setError,
+    verifyUserEmail,
+    resendVerificationCode,
+  } = useUsers();
 
   const navigate = useNavigate();
-  const email = sessionStorage.getItem("emailToVerify"); // recupera email
+
+  const email = sessionStorage.getItem("emailToVerify");
 
   const handleConfirm = async () => {
+    if (!email) {
+      setError("E-mail não encontrado. Realize o cadastro novamente.");
+      return;
+    }
+
+    if (!code.trim()) {
+      setError("Informe o código recebido por e-mail.");
+      return;
+    }
+
     try {
-      const response = await api.post("/users/verify-code", { codeUser: code, email });
-      console.log("Código verificado com sucesso");
-      console.log(response.data);
+      const response = await verifyUserEmail(email, code.trim());
+
+      console.log("Cadastro confirmado:", response);
+
+      // A resposta contém auth.accessToken e auth.refreshToken.
+      // Integre esses tokens ao mecanismo de autenticação da aplicação
+      // antes de navegar para uma rota protegida.
+
       sessionStorage.removeItem("emailToVerify");
+      setCode("");
       onOpenChange(false);
-      toast("Código verificado com sucesso e usuário registrado", {
+
+      toast("E-mail verificado e usuário cadastrado com sucesso!", {
         duration: 5000,
         icon: <CircleCheck className="text-white" />,
         style: {
@@ -48,10 +72,14 @@ export function EmailAuthenticateDialog({
           gap: "1rem",
         },
       });
+
       navigate("/user");
     } catch (err: any) {
-      setError(err?.response?.data?.message || "Erro ao verificar código");
-      toast("Erro ao verificar código", {
+      setError(
+        err?.message || "Erro ao verificar código de confirmação"
+      );
+
+      toast("Não foi possível verificar o código", {
         duration: 5000,
         icon: <CircleX className="text-white" />,
         style: {
@@ -64,10 +92,38 @@ export function EmailAuthenticateDialog({
   };
 
   const handleResend = async () => {
+    if (!email) {
+      setError("E-mail não encontrado. Realize o cadastro novamente.");
+      return;
+    }
+
     try {
-      await api.post("/users/verify-code", { resendCode: true, email });
-    } catch {
-      setError("Erro ao reenviar código.");
+      const response = await resendVerificationCode(email);
+
+      setCode("");
+      setError(null);
+
+      toast(response.message || "Código enviado para o e-mail!", {
+        duration: 5000,
+        icon: <CircleCheck className="text-white" />,
+        style: {
+          backgroundColor: "#16a34a",
+          color: "white",
+          gap: "1rem",
+        },
+      });
+    } catch (err: any) {
+      setError(err?.message || "Erro ao reenviar código.");
+
+      toast("Não foi possível reenviar o código", {
+        duration: 5000,
+        icon: <CircleX className="text-white" />,
+        style: {
+          backgroundColor: "#dc2626",
+          color: "white",
+          gap: "1rem",
+        },
+      });
     }
   };
 
@@ -75,38 +131,61 @@ export function EmailAuthenticateDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Confirmação de email</DialogTitle>
+          <DialogTitle>Confirmação de e-mail</DialogTitle>
           <DialogDescription>
-            Enviamos um código para o seu e-mail. Digite-o abaixo para
-            continuar.
+            Enviamos um código para o seu e-mail. Digite-o abaixo
+            para concluir o cadastro.
+            {email && (
+              <span className="mt-2 block font-medium">
+                {email}
+              </span>
+            )}
           </DialogDescription>
         </DialogHeader>
+
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="auth_code" className="text-right">
               Código
             </Label>
+
             <MaskedInput
               mask={maskVerificationCode}
               id="auth_code"
               value={code}
-              onChange={(e) => setCode(e.target.value)}
+              onChange={(e) => {
+                setCode(e.target.value);
+                if (error) setError(null);
+              }}
               className="col-span-3"
-              autoComplete="off"
+              autoComplete="one-time-code"
             />
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+
+          {error && (
+            <p className="text-sm text-red-500">{error}</p>
+          )}
         </div>
+
         <DialogFooter>
           <Button
             onClick={handleConfirm}
-            disabled={loading}
+            disabled={loading || !code.trim()}
             className="bg-green-600 text-white hover:bg-green-700"
           >
-            {loading ? <Loader className="animate-spin" /> : "Confirmar"}
+            {loading ? (
+              <Loader className="animate-spin" />
+            ) : (
+              "Confirmar"
+            )}
           </Button>
-          <Button onClick={handleResend} variant="outline" disabled={loading}>
-            Reenviar
+
+          <Button
+            onClick={handleResend}
+            variant="outline"
+            disabled={loading}
+          >
+            Reenviar código
           </Button>
         </DialogFooter>
       </DialogContent>
