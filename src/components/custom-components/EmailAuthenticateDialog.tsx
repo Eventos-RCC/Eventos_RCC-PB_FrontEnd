@@ -55,10 +55,6 @@ export function EmailAuthenticateDialog({
 
       console.log("Cadastro confirmado:", response);
 
-      // A resposta contém auth.accessToken e auth.refreshToken.
-      // Integre esses tokens ao mecanismo de autenticação da aplicação
-      // antes de navegar para uma rota protegida.
-
       sessionStorage.removeItem("emailToVerify");
       setCode("");
       onOpenChange(false);
@@ -73,7 +69,7 @@ export function EmailAuthenticateDialog({
         },
       });
 
-      navigate("/user");
+      navigate("/address");
     } catch (err: any) {
       setError(
         err?.message || "Erro ao verificar código de confirmação"

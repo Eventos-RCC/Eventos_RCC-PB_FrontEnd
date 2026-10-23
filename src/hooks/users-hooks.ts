@@ -32,6 +32,22 @@ interface VerifyEmailResponse {
   auth: AuthResponse;
 }
 
+export interface AddressRequest {
+  street: string;
+  number: string;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+
+export interface AddressResponse extends AddressRequest {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const useUsers = () => {
   const {
     users,
@@ -76,7 +92,6 @@ export const useUsers = () => {
         user
       );
 
-      // A resposta ainda não representa o usuário criado.
       return response.data;
     } catch (err: any) {
       const message =
@@ -89,7 +104,7 @@ export const useUsers = () => {
     }
   };
 
-  // Etapa 2: verifica o código e conclui o cadastro.
+  // Etapa 1.2: verifica o código e conclui o cadastro.
   const verifyUserEmail = async (
     email: string,
     codeUser: string
@@ -116,7 +131,7 @@ export const useUsers = () => {
     }
   };
 
-  // Etapa 3: solicita um novo código para o e-mail informado.
+  // Etapa 1.3: solicita um novo código para o e-mail informado.
   const resendVerificationCode = async (
     email: string
   ): Promise<OnboardingResponse> => {
@@ -133,6 +148,31 @@ export const useUsers = () => {
       const message =
         err?.response?.data?.message ||
         "Erro ao reenviar código de confirmação";
+
+      setError(message);
+      throw new Error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveAddress = async (
+    address: AddressRequest
+  ): Promise<AddressResponse> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.post<AddressResponse>(
+        "/users/onboarding2",
+        address
+      );
+
+      return response.data;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message ||
+        "Erro ao salvar endereço";
 
       setError(message);
       throw new Error(message);
@@ -163,6 +203,7 @@ export const useUsers = () => {
     userLogin,
     verifyUserEmail,
     resendVerificationCode,
+    saveAddress,
     getUsers,
     getUserById,
     loading,
