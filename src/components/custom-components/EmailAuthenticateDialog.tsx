@@ -55,6 +55,23 @@ export function EmailAuthenticateDialog({
 
       console.log("Cadastro confirmado:", response);
 
+      const accessToken = response?.auth?.accessToken;
+      const refreshToken = response?.auth?.refreshToken;
+
+      if (!accessToken) {
+        throw new Error(
+          "O servidor não retornou o token de acesso. Verifique a resposta da API."
+        );
+      }
+
+      // Armazena o token que será usado nas próximas requisições.
+      sessionStorage.setItem("accessToken", accessToken);
+
+      // Armazena o refresh token caso seja necessário renovar a sessão.
+      if (refreshToken) {
+        sessionStorage.setItem("refreshToken", refreshToken);
+      }
+
       sessionStorage.removeItem("emailToVerify");
       setCode("");
       onOpenChange(false);

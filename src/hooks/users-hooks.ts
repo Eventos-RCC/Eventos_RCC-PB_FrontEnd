@@ -48,6 +48,31 @@ export interface AddressResponse extends AddressRequest {
   updatedAt: string;
 }
 
+export interface GrupoOracaoOption {
+  id: number;
+  name: string;
+  status?: string;
+  emUnidade?: boolean;
+}
+
+export interface MinisterioOption {
+  id: number;
+  name: string;
+  sigla: string;
+}
+
+export interface Onboarding3Request {
+  grupoOracaoId: number;
+  ministerioIds: number[];
+}
+
+export interface Onboarding3Response {
+  id: number;
+  name: string;
+  email: string;
+  onboardingStep: string;
+}
+
 export const useUsers = () => {
   const {
     users,
@@ -181,6 +206,45 @@ export const useUsers = () => {
     }
   };
 
+  const getGrupoOracaoOptions = async (): Promise<GrupoOracaoOption[]> => {
+    const response = await api.get<GrupoOracaoOption[]>(
+      "/grupoOracao/options"
+    );
+
+    return response.data;
+  };
+
+  const getAllMinisterios = async (): Promise<MinisterioOption[]> => {
+    const response = await api.get<MinisterioOption[]>("/ministerios");
+
+    return response.data;
+  };
+
+  const saveGroupAndMinisterios = async (
+    data: Onboarding3Request
+  ): Promise<Onboarding3Response> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.post<Onboarding3Response>(
+        "/users/onboarding3",
+        data
+      );
+
+      return response.data;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message ||
+        "Não foi possível concluir o cadastro";
+
+      setError(message);
+      throw new Error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getUsers = async () => {
     setLoading(true);
     setError(null);
@@ -204,6 +268,9 @@ export const useUsers = () => {
     verifyUserEmail,
     resendVerificationCode,
     saveAddress,
+    getGrupoOracaoOptions,
+    getAllMinisterios,
+    saveGroupAndMinisterios,
     getUsers,
     getUserById,
     loading,

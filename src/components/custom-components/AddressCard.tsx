@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
-import { CircleCheck, Loader, MapPin } from "lucide-react";
+import { CircleCheck, CircleX, Loader, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { useUsers } from "@/hooks/users-hooks";
 import type { AddressRequest } from "@/hooks/users-hooks";
@@ -93,7 +93,7 @@ export function AddressCard() {
                 },
             });
 
-            navigate("/user/onboarding3");
+            navigate("/groups-and-ministeries");
         } catch (err) {
             const message =
                 err instanceof Error
@@ -101,12 +101,20 @@ export function AddressCard() {
                     : "Não foi possível salvar o endereço";
 
             setSubmitError(message);
-            toast.error(message);
+            toast("Não foi possível salvar o endereço", {
+                duration: 5000,
+                icon: <CircleX className="text-white" />,
+                style: {
+                    backgroundColor: "#dc2626",
+                    color: "white",
+                    gap: "1rem",
+                },
+            });
         }
     };
 
     return (
-        <Card className="relative max-w-3xl mx-auto my-10 bg-white shadow-lg rounded-lg">
+        <Card className="max-w-3xl mx-auto my-10 bg-white shadow-lg rounded-lg p-6">
             <CardHeader className="flex flex-col items-center">
                 <MapPin className="w-10 h-10 text-green-600" />
 
