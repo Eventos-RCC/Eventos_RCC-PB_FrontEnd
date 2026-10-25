@@ -76,7 +76,7 @@ export function EmailAuthenticateDialog({
       setCode("");
       onOpenChange(false);
 
-      toast("E-mail verificado e usuário cadastrado com sucesso!", {
+      toast("E-mail verificado com sucesso!", {
         duration: 5000,
         icon: <CircleCheck className="text-white" />,
         style: {
@@ -106,7 +106,7 @@ export function EmailAuthenticateDialog({
 
   const handleResend = async () => {
     if (!email) {
-      setError("E-mail não encontrado. Realize o cadastro novamente.");
+      setError("E-mail não encontrado. Informe um e-mail válido.");
       return;
     }
 

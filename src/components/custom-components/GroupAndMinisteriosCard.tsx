@@ -102,30 +102,24 @@ export function GroupAndMinisteriosCard() {
         );
     }
 
-    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+
+    async function handleSubmit(
+        event: React.FormEvent<HTMLFormElement>
+    ) {
         event.preventDefault();
-
         setSubmitError(null);
-
-        if (!grupoOracaoId) {
-            setSubmitError("Selecione seu grupo de oração.");
-            return;
-        }
-
-        if (ministerioIds.length === 0) {
-            setSubmitError("Selecione pelo menos um ministério.");
-            return;
-        }
 
         try {
             const response = await saveGroupAndMinisterios({
-                grupoOracaoId: Number(grupoOracaoId),
+                grupoOracaoId: grupoOracaoId
+                    ? Number(grupoOracaoId)
+                    : null,
                 ministerioIds,
             });
 
             console.log("Cadastro concluído:", response);
 
-            toast("E-mail verificado e usuário cadastrado com sucesso!", {
+            toast("Cadastro concluído com sucesso!", {
                 duration: 5000,
                 icon: <CircleCheck className="text-white" />,
                 style: {
@@ -135,7 +129,6 @@ export function GroupAndMinisteriosCard() {
                 },
             });
 
-            // Ajuste este destino para a página inicial autenticada do seu projeto.
             navigate("/user");
         } catch (error) {
             const message =
@@ -144,7 +137,8 @@ export function GroupAndMinisteriosCard() {
                     : "Não foi possível concluir o cadastro.";
 
             setSubmitError(message);
-            toast("Não foi possível verificar o código", {
+
+            toast("Não foi possível concluir o cadastro.", {
                 duration: 5000,
                 icon: <CircleX className="text-white" />,
                 style: {
@@ -155,6 +149,7 @@ export function GroupAndMinisteriosCard() {
             });
         }
     }
+
 
     if (loadingOptions) {
         return (
@@ -177,6 +172,7 @@ export function GroupAndMinisteriosCard() {
                     <Button
                         type="button"
                         variant="outline"
+                        className="cursor-pointer"
                         onClick={() => window.location.reload()}
                     >
                         Tentar novamente
@@ -196,8 +192,9 @@ export function GroupAndMinisteriosCard() {
                 </CardTitle>
 
                 <CardDescription className="mt-2 text-sm text-gray-500">
-                    Selecione seu grupo de oração e os ministérios dos quais participa
-                    para concluir seu cadastro.
+                    Se desejar, informe seu grupo de oração e os ministérios
+                    dos quais participa. Você também pode concluir o cadastro
+                    sem preencher essas informações.
                 </CardDescription>
             </CardHeader>
 
@@ -230,8 +227,8 @@ export function GroupAndMinisteriosCard() {
                                     <label
                                         key={grupo.id}
                                         className={`flex cursor-pointer items-center gap-3 rounded-md border p-3 transition-colors ${grupoOracaoId === String(grupo.id)
-                                                ? "border-green-600 bg-green-50"
-                                                : "border-gray-200 hover:bg-gray-50"
+                                            ? "border-green-600 bg-green-50"
+                                            : "border-gray-200 hover:bg-gray-50"
                                             }`}
                                     >
                                         <input
@@ -256,7 +253,9 @@ export function GroupAndMinisteriosCard() {
                         </div>
 
                         <p className="text-xs text-gray-500">
-                            {grupos.length} grupo(s) disponível(is).
+                            {grupos.length === 0 && "Nenhum grupo de oração disponível. Esta informação é opcional."}
+                            {grupos.length === 1 && "1 grupo de oração disponível. Esta informação é opcional."}
+                            {grupos.length > 1 && `${grupos.length} grupos de oração disponíveis. Esta informação é opcional.`}
                         </p>
                     </section>
 
@@ -267,7 +266,8 @@ export function GroupAndMinisteriosCard() {
                         </div>
 
                         <p className="text-sm text-gray-500">
-                            Selecione todos os ministérios dos quais você participa.
+                            Selecione os ministérios dos quais participa, se houver.
+                            Esta informação é opcional.
                         </p>
 
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -278,8 +278,8 @@ export function GroupAndMinisteriosCard() {
                                     <label
                                         key={ministerio.id}
                                         className={`flex cursor-pointer items-center gap-3 rounded-md border p-3 transition-colors ${checked
-                                                ? "border-green-600 bg-green-50"
-                                                : "border-gray-200 hover:bg-gray-50"
+                                            ? "border-green-600 bg-green-50"
+                                            : "border-gray-200 hover:bg-gray-50"
                                             }`}
                                     >
                                         <input
@@ -317,9 +317,10 @@ export function GroupAndMinisteriosCard() {
                         </p>
                     )}
 
+
                     <Button
                         type="submit"
-                        disabled={loading || ministerios.length === 0 || grupos.length === 0}
+                        disabled={loading}
                         className="w-full bg-green-600 text-white hover:bg-green-700"
                     >
                         {loading ? (
@@ -331,6 +332,7 @@ export function GroupAndMinisteriosCard() {
                             "Concluir cadastro"
                         )}
                     </Button>
+
                 </form>
             </CardContent>
         </Card>

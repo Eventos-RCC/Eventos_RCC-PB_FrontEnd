@@ -62,7 +62,7 @@ export interface MinisterioOption {
 }
 
 export interface Onboarding3Request {
-  grupoOracaoId: number;
+  grupoOracaoId: number | null;
   ministerioIds: number[];
 }
 

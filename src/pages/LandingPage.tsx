@@ -2,7 +2,7 @@ import { HeaderBar } from "@/components/custom-components/HeaderBar";
 
 export function LandingPage() {
     return (
-        <>
+        <div className="flex flex-col min-h-screen overflow-x-hidden">
             <HeaderBar />
             <div
                 className={`flex relative h-[600px] w-full items-center justify-center bg-[url('/assets/rcc-landing-img.png')] from-transparent to-white bg-cover bg-center bg-no-repeat`}
@@ -19,6 +19,6 @@ export function LandingPage() {
                     </h1>
                 </div>
             </div>
-        </>
+        </div>
     )
 }

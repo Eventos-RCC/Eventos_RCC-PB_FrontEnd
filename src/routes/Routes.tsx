@@ -23,7 +23,7 @@ export const defaultRoutes = createBrowserRouter([
         errorElement: <ErrorPage />,
     },
     {
-        path: "/groups-and-ministeries",
+        path: "/groups-and-ministries",
         element: <GroupAndMinisteriosPage />,
         errorElement: <ErrorPage />,
     },

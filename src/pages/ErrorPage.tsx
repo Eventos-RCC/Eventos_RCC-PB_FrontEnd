@@ -5,7 +5,7 @@ export default function ErrorPage() {
     console.error(error);
 
     return (
-        <div className="text-4xl flex flex-col items-center justify-center h-screen">
+        <div className="text-4xl flex flex-col items-center justify-center h-screen overflow-x-hidden">
             <h1>{(error as any).status}</h1>
             <span>{(error as any).statusText}</span>
             <span>{(error as any).message}</span>
