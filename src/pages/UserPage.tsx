@@ -55,11 +55,6 @@ export function UserPage({ children }: { children: React.ReactNode }) {
 
               {sideBarOption === 0 && (
                 <div className="flex flex-col items-center justify-start w-full h-full">
-                  <img
-                    src="/assets/christmas.png"
-                    alt="imagem cristã"
-                    className="w-[300px] h-[300px] mb-4"
-                  />
                   <h1
                     className="text-2xl text-center font-normal">
                     Olá {firstName}, seja bem-vindo ao site de eventos da Renovação Carismática Católica da Paraíba!
@@ -113,3 +108,54 @@ export function UserPage({ children }: { children: React.ReactNode }) {
     </>
   );
 }
+
+// import { AskedQuestionsHandler } from "@/components/custom/AskedQuestions";
+// import {
+//     AssociateHandler,
+//     RequestsHandler
+// } from "@/components/custom/AssociateToCompany";
+// import { BrowseBookings } from "@/components/custom/BrowseBookings";
+// import { BrowseProducts } from "@/components/custom/BrowseProducts";
+// import { NewProduct } from "@/components/custom/NewProduct";
+// import { UserAccountManagement } from "@/components/custom/UserAccountManagement";
+// import { BrowseNotifications } from "@/components/custom/UserNotifications";
+// import { UserSidebar } from "@/components/custom/UserSidebar";
+// import {
+//     SidebarInset,
+//     SidebarProvider,
+//     SidebarTrigger
+// } from "@/components/ui/sidebar";
+// import { useState } from "react";
+
+// export default function User() {
+
+//     const [sidebarOption, setSidebarOption] = useState<number>(2);
+
+//     function handleMenuClick(option: number) {
+//         setSidebarOption(option);
+//     }
+
+//     return (
+//         <SidebarProvider>
+//             <UserSidebar
+//                 onMenuClick={handleMenuClick}
+//                 activeOption={sidebarOption}
+//             />
+//             <SidebarTrigger
+//             className={`hover:cursor-pointer rotate-180`} 
+//             />
+//             <SidebarInset className="flex flex-col flex-1 overflow-x-hidden">
+//                 {sidebarOption === 0 && (<UserAccountManagement />)}
+//                 {sidebarOption === 1 && (<BrowseNotifications />)}
+//                 {sidebarOption === 2 && (<BrowseProducts />)}
+//                 {sidebarOption === 3 && (<BrowseBookings />)}
+//                 {sidebarOption === 4 && (<NewProduct />)}
+//                 {sidebarOption === 5 && (<AssociateHandler />)}
+//                 {sidebarOption === 6 && (<AskedQuestionsHandler />)}
+//                 {sidebarOption === 7 && (<RequestsHandler />)}
+//             </SidebarInset>
+//         </SidebarProvider>
+//     )
+// }
+
+// export { User }

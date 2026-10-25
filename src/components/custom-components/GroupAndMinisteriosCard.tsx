@@ -321,7 +321,7 @@ export function GroupAndMinisteriosCard() {
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-green-600 text-white hover:bg-green-700"
+                        className="w-full bg-green-600 text-white hover:bg-green-700 cursor-pointer"
                     >
                         {loading ? (
                             <>

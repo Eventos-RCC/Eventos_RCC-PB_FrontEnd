@@ -39,20 +39,20 @@ export function HeaderBar() {
                 >
                     <Button
                         variant="ghost"
-                        className="font-semibold"
+                        className="font-semibold cursor-pointer"
                         onClick={irParaSobre}
                     >
                         Sobre
                     </Button>
 
                     <Link to="/signup">
-                        <Button variant="ghost" className="font-semibold">
+                        <Button variant="ghost" className="font-semibold cursor-pointer">
                             Cadastrar
                         </Button>
                     </Link>
 
                     <Link to="/login">
-                        <Button className="w-28 bg-green-600 text-white hover:bg-green-700">
+                        <Button className="w-28 bg-green-600 text-white hover:bg-green-700 cursor-pointer">
                             Login
                         </Button>
                     </Link>

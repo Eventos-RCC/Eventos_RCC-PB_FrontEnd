@@ -142,24 +142,28 @@ export function EmailAuthenticateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Confirmação de e-mail</DialogTitle>
-          <DialogDescription>
-            Enviamos um código para o seu e-mail. Digite-o abaixo
-            para concluir o cadastro.
+      <DialogContent className="w-[calc(100%-2rem)] max-w-[425px] overflow-hidden rounded-xl p-5 sm:p-6">
+        <DialogHeader className="space-y-2 text-left">
+          <DialogTitle className="text-xl font-bold sm:text-2xl">
+            Confirmação de e-mail
+          </DialogTitle>
+
+          <DialogDescription className="text-sm leading-relaxed break-words">
+            Enviamos um código para o seu e-mail. Digite-o abaixo para concluir
+            o cadastro.
+
             {email && (
-              <span className="mt-2 block font-medium">
+              <span className="mt-2 block font-medium text-foreground break-all">
                 {email}
               </span>
             )}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="auth_code" className="text-right">
-              Código
+        <div className="grid gap-3 py-3 sm:gap-4 sm:py-4">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center sm:gap-3">
+            <Label htmlFor="auth_code" className="text-sm font-medium">
+              Código de confirmação
             </Label>
 
             <MaskedInput
@@ -170,33 +174,46 @@ export function EmailAuthenticateDialog({
                 setCode(e.target.value);
                 if (error) setError(null);
               }}
-              className="col-span-3"
+              className="w-full min-w-0"
               autoComplete="one-time-code"
+              inputMode="numeric"
+              autoFocus
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-500">{error}</p>
+            <p
+              role="alert"
+              className="text-sm leading-relaxed text-red-500"
+            >
+              {error}
+            </p>
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex-col gap-2 sm:flex-row sm:gap-2">
           <Button
+            type="button"
             onClick={handleConfirm}
             disabled={loading || !code.trim()}
-            className="bg-green-600 text-white hover:bg-green-700"
+            className="order-1 w-full cursor-pointer bg-green-600 text-white hover:bg-green-700 sm:order-2 sm:w-auto sm:flex-1"
           >
             {loading ? (
-              <Loader className="animate-spin" />
+              <>
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                Confirmando...
+              </>
             ) : (
               "Confirmar"
             )}
           </Button>
 
           <Button
+            type="button"
             onClick={handleResend}
             variant="outline"
             disabled={loading}
+            className="order-2 w-full cursor-pointer sm:order-1 sm:w-auto sm:flex-1"
           >
             Reenviar código
           </Button>
@@ -204,4 +221,5 @@ export function EmailAuthenticateDialog({
       </DialogContent>
     </Dialog>
   );
+
 }

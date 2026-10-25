@@ -215,132 +215,204 @@ export function AddressCard() {
     };
 
     return (
-        <Card className="mx-auto my-10 max-w-3xl rounded-lg bg-white p-6 shadow-lg">
-            <CardHeader className="flex flex-col items-center">
-                <MapPin className="h-10 w-10 text-green-600" />
+        <Card className="relative mx-3 my-5 w-auto overflow-hidden rounded-xl bg-white shadow-lg sm:mx-6 sm:my-8 md:mx-auto md:my-10 md:flex md:w-full md:max-w-5xl md:flex-row">
+            {/* Imagem lateral: exibida em tablets maiores e desktops */}
+            <div className="relative hidden min-h-full md:block md:w-5/12 lg:w-2/5">
+                <img
+                    src="/assets/rcc-register-img-00.png"
+                    alt="Ilustração da página de cadastro"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    draggable={false}
+                />
 
-                <CardTitle className="text-3xl font-bold">
-                    Seu endereço
-                </CardTitle>
+                {/* Logo sobre a imagem, seguindo o padrão do RegisterCard */}
+                <img
+                    src="/assets/rccpb-04.png"
+                    alt="Logo RCC-PB"
+                    className="absolute left-1/2 top-8 z-10 h-auto w-32 -translate-x-1/2 object-contain brightness-0 invert lg:top-10 lg:w-40"
+                    draggable={false}
+                />
+            </div>
 
-                <CardDescription className="mt-2 text-center text-sm text-gray-500">
-                    Informe seu CEP para preencher o endereço automaticamente.
-                    Você poderá revisar e editar os campos antes de continuar.
-                </CardDescription>
-            </CardHeader>
+            {/* Área do formulário */}
+            <div className="flex min-w-0 w-full flex-col md:w-7/12 lg:w-3/5">
+                <CardHeader className="flex flex-col items-center px-5 pb-3 pt-7 text-center sm:px-8 sm:pt-9 md:px-6 md:pt-8 lg:px-8">
+                    {/* Logo centralizada apenas em dispositivos móveis */}
+                    <div className="flex w-full justify-center md:hidden">
+                        <img
+                            src="/assets/rccpb-04.png"
+                            alt="Logo RCC-PB"
+                            className="mb-4 h-auto w-28 object-contain"
+                            draggable={false}
+                        />
+                    </div>
 
-            <CardContent>
-                <FormProvider {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-5"
-                    >
-                        {/* CEP primeiro */}
-                        <FormField
-                            control={form.control}
-                            name="zipCode"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>CEP</FormLabel>
+                    <div className="flex gap-2 items-center">
+                        <CardTitle className="w-full text-center text-2xl font-bold sm:text-3xl md:text-2xl lg:text-3xl">
+                            Seu endereço
+                        </CardTitle>
+                        <MapPin className="mb-2 h-9 w-9 text-green-600 md:h-8 md:w-8" />
+                    </div>
 
-                                    <div className="flex flex-col gap-2 sm:flex-row">
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                placeholder="Ex.: 58000-000"
-                                                autoComplete="postal-code"
-                                                maxLength={9}
-                                                inputMode="numeric"
-                                                className="flex-1"
-                                                onChange={(event) => {
-                                                    const value =
-                                                        event.target.value.replace(
-                                                            /[^\d-]/g,
-                                                            ""
-                                                        );
+                    <CardDescription className="mt-2 w-full max-w-md text-center text-sm leading-relaxed text-gray-500">
+                        Informe seu CEP para preencher o endereço automaticamente.
+                        Você poderá revisar e editar os campos antes de continuar.
+                    </CardDescription>
+                </CardHeader>
 
-                                                    field.onChange(value);
-                                                    setCepMessage(null);
+                <CardContent className="px-5 pb-7 sm:px-8 md:px-6 md:pb-8 lg:px-8">
+                    <FormProvider {...form}>
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="space-y-4 sm:space-y-5"
+                        >
+                            {/* CEP */}
+                            <FormField
+                                control={form.control}
+                                name="zipCode"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>CEP</FormLabel>
 
-                                                    // Invalida consultas anteriores
-                                                    // se o CEP for alterado.
-                                                    cepRequestId.current++;
-                                                    setCepLoading(false);
-                                                }}
-                                                onKeyDown={(event) => {
-                                                    if (event.key === "Enter") {
-                                                        event.preventDefault();
-                                                        void buscarCep();
-                                                    }
-                                                }}
-                                            />
-                                        </FormControl>
+                                        <div className="flex flex-col gap-2 sm:flex-row">
+                                            <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    placeholder="Ex.: 58000-000"
+                                                    autoComplete="postal-code"
+                                                    maxLength={9}
+                                                    inputMode="numeric"
+                                                    className="min-w-0 flex-1"
+                                                    onChange={(event) => {
+                                                        const value =
+                                                            event.target.value.replace(
+                                                                /[^\d-]/g,
+                                                                ""
+                                                            );
 
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="shrink-0 cursor-pointer"
-                                            disabled={cepLoading}
-                                            onClick={() => void buscarCep()}
-                                        >
-                                            {cepLoading ? (
-                                                <Loader className="mr-2 h-4 w-4 animate-spin" />
-                                            ) : (
-                                                <Search className="mr-2 h-4 w-4" />
-                                            )}
-                                            {cepLoading
-                                                ? "Consultando..."
-                                                : "Buscar CEP"}
-                                        </Button>
-                                    </div>
+                                                        field.onChange(value);
+                                                        setCepMessage(null);
 
-                                    <FormMessage />
+                                                        // Invalida consultas anteriores.
+                                                        cepRequestId.current++;
+                                                        setCepLoading(false);
+                                                    }}
+                                                    onKeyDown={(event) => {
+                                                        if (event.key === "Enter") {
+                                                            event.preventDefault();
+                                                            void buscarCep();
+                                                        }
+                                                    }}
+                                                />
+                                            </FormControl>
 
-                                    {cepMessage && (
-                                        <p
-                                            role="status"
-                                            aria-live="polite"
-                                            className={`text-sm ${
-                                                cepMessage.type === "success"
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                className="w-full shrink-0 cursor-pointer sm:w-auto"
+                                                disabled={cepLoading}
+                                                onClick={() => void buscarCep()}
+                                            >
+                                                {cepLoading ? (
+                                                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Search className="mr-2 h-4 w-4" />
+                                                )}
+
+                                                {cepLoading
+                                                    ? "Consultando..."
+                                                    : "Buscar CEP"}
+                                            </Button>
+                                        </div>
+
+                                        <FormMessage />
+
+                                        {cepMessage && (
+                                            <p
+                                                role="status"
+                                                aria-live="polite"
+                                                className={`text-sm ${cepMessage.type === "success"
                                                     ? "text-green-600"
                                                     : "text-red-500"
-                                            }`}
-                                        >
-                                            {cepMessage.text}
-                                        </p>
+                                                    }`}
+                                            >
+                                                {cepMessage.text}
+                                            </p>
+                                        )}
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* Rua */}
+                            <FormField
+                                control={form.control}
+                                name="street"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Rua / Avenida</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Ex.: Rua das Flores"
+                                                autoComplete="address-line1"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* Número e complemento */}
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <FormField
+                                    control={form.control}
+                                    name="number"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Número</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Ex.: 123 ou S/N"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
                                     )}
-                                </FormItem>
-                            )}
-                        />
+                                />
 
-                        <FormField
-                            control={form.control}
-                            name="street"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Rua / Avenida</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Ex.: Rua das Flores"
-                                            autoComplete="address-line1"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                <FormField
+                                    control={form.control}
+                                    name="complement"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Complemento (opcional)
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Ex.: Apartamento 202"
+                                                    autoComplete="address-line2"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
 
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            {/* Bairro */}
                             <FormField
                                 control={form.control}
-                                name="number"
+                                name="neighborhood"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Número</FormLabel>
+                                        <FormLabel>Bairro</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder="Ex.: 123 ou S/N"
+                                                placeholder="Ex.: Centro"
+                                                autoComplete="address-level3"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -349,112 +421,78 @@ export function AddressCard() {
                                 )}
                             />
 
-                            <FormField
-                                control={form.control}
-                                name="complement"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            Complemento (opcional)
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Ex.: Apartamento 202"
-                                                autoComplete="address-line2"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                            {/* Cidade e estado */}
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <FormField
+                                    control={form.control}
+                                    name="city"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Cidade</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Ex.: João Pessoa"
+                                                    autoComplete="address-level2"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                        <FormField
-                            control={form.control}
-                            name="neighborhood"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Bairro</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Ex.: Centro"
-                                            autoComplete="address-level3"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                                <FormField
+                                    control={form.control}
+                                    name="state"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Estado (UF)</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Ex.: PB"
+                                                    maxLength={2}
+                                                    autoComplete="address-level1"
+                                                    {...field}
+                                                    onChange={(event) =>
+                                                        field.onChange(
+                                                            event.target.value.toUpperCase()
+                                                        )
+                                                    }
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+
+                            {/* Erro ao salvar */}
+                            {submitError && (
+                                <p role="alert" className="text-sm text-red-500">
+                                    {submitError}
+                                </p>
                             )}
-                        />
 
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <FormField
-                                control={form.control}
-                                name="city"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Cidade</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Ex.: João Pessoa"
-                                                autoComplete="address-level2"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                            {/* Botão de envio */}
+                            <Button
+                                type="submit"
+                                disabled={loading || cepLoading}
+                                className="w-full cursor-pointer bg-green-600 text-white hover:bg-green-700"
+                            >
+                                {loading ? (
+                                    <>
+                                        <Loader className="mr-2 h-4 w-4 animate-spin" />
+                                        Salvando endereço...
+                                    </>
+                                ) : (
+                                    "Salvar e continuar"
                                 )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="state"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Estado (UF)</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Ex.: PB"
-                                                maxLength={2}
-                                                autoComplete="address-level1"
-                                                {...field}
-                                                onChange={(event) =>
-                                                    field.onChange(
-                                                        event.target.value.toUpperCase()
-                                                    )
-                                                }
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        {submitError && (
-                            <p role="alert" className="text-sm text-red-500">
-                                {submitError}
-                            </p>
-                        )}
-
-                        <Button
-                            type="submit"
-                            disabled={loading || cepLoading}
-                            className="w-full bg-green-600 text-white hover:bg-green-700 cursor-pointer"
-                        >
-                            {loading ? (
-                                <>
-                                    <Loader className="mr-2 h-4 w-4 animate-spin" />
-                                    Salvando endereço...
-                                </>
-                            ) : (
-                                "Salvar e continuar"
-                            )}
-                        </Button>
-                    </form>
-                </FormProvider>
-            </CardContent>
+                            </Button>
+                        </form>
+                    </FormProvider>
+                </CardContent>
+            </div>
         </Card>
     );
+
 }

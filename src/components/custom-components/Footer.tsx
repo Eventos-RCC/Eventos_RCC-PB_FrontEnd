@@ -6,7 +6,7 @@ export function Footer() {
 
     return (
         <div className="bg-green-600 flex flex-col justify-center items-center h-auto px-10 py-16 gap-6 overflow-hidden">
-            <div className="flex justify-center items-center gap-4 max-[275px]:flex-col">
+            <div className="flex justify-center items-center gap-4 max-[450px]:flex-col">
                 <img
                     src="/assets/rccpb-04.png" 
                     alt="logo-ciencia-da-computacao"
