@@ -117,9 +117,9 @@ export function GroupAndMinisteriosCard() {
                 ministerioIds,
             });
 
-            console.log("Cadastro concluído:", response);
+            console.log("Grupos e ministérios salvos:", response);
 
-            toast("Cadastro concluído com sucesso!", {
+            toast("Grupos e ministérios salvos com sucesso!", {
                 duration: 5000,
                 icon: <CircleCheck className="text-white" />,
                 style: {
@@ -129,16 +129,16 @@ export function GroupAndMinisteriosCard() {
                 },
             });
 
-            navigate("/user");
+            navigate("/rcc-formation");
         } catch (error) {
             const message =
                 error instanceof Error
                     ? error.message
-                    : "Não foi possível concluir o cadastro.";
+                    : "Não foi possível concluir etapa do cadastro.";
 
             setSubmitError(message);
 
-            toast("Não foi possível concluir o cadastro.", {
+            toast("Não foi possível concluir etapa do cadastro.", {
                 duration: 5000,
                 icon: <CircleX className="text-white" />,
                 style: {
@@ -326,10 +326,10 @@ export function GroupAndMinisteriosCard() {
                         {loading ? (
                             <>
                                 <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                                Concluindo cadastro...
+                                Salvando...
                             </>
                         ) : (
-                            "Concluir cadastro"
+                            "Salvar e continuar"
                         )}
                     </Button>
 

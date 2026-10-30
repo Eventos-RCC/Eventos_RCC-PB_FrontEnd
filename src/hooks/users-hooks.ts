@@ -73,6 +73,18 @@ export interface Onboarding3Response {
   onboardingStep: string;
 }
 
+export interface RccFormationOption {
+  id: number;
+  name: string;
+  description: string;
+  active: boolean;
+}
+
+export interface Onboarding4Request {
+  initialDateRcc: string | null;
+  formationIds: number[];
+}
+
 export const useUsers = () => {
   const {
     users,
@@ -104,7 +116,6 @@ export const useUsers = () => {
     }
   };
 
-  // Etapa 1: envia os dados iniciais e solicita o código por e-mail.
   const createUser = async (
     user: CreateUserData
   ): Promise<OnboardingResponse> => {
@@ -129,7 +140,6 @@ export const useUsers = () => {
     }
   };
 
-  // Etapa 1.2: verifica o código e conclui o cadastro.
   const verifyUserEmail = async (
     email: string,
     codeUser: string
@@ -156,7 +166,6 @@ export const useUsers = () => {
     }
   };
 
-  // Etapa 1.3: solicita um novo código para o e-mail informado.
   const resendVerificationCode = async (
     email: string
   ): Promise<OnboardingResponse> => {
@@ -245,6 +254,16 @@ export const useUsers = () => {
     }
   };
 
+  async function getAllRccFormations(): Promise<RccFormationOption[]> {
+    const response = await api.get<RccFormationOption[]>("/formacoes/all");
+    return response.data;
+  }
+
+  async function saveRccFormations(data: Onboarding4Request) {
+    const response = await api.post("/users/onboarding4", data);
+    return response.data;
+  }
+
   const getUsers = async () => {
     setLoading(true);
     setError(null);
@@ -271,6 +290,8 @@ export const useUsers = () => {
     getGrupoOracaoOptions,
     getAllMinisterios,
     saveGroupAndMinisterios,
+    getAllRccFormations,
+    saveRccFormations,
     getUsers,
     getUserById,
     loading,
